@@ -56,11 +56,11 @@ namespace The_15_Game
                     }
                     if(r == CursorRow && c == CursorColumn)
                     {
-                        Console.Write("X");
+                        Console.Write("x");
                     }
                     else
                     {
-                        Console.Write("");
+                        Console.Write(board[r,c]);
                     }
                         Console.Write(board[r, c]);
                     Console.Write(vLine);
