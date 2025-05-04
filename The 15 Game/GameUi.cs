@@ -19,9 +19,15 @@ namespace The_15_Game
             Console.WriteLine();
 
         }
+        public static void GameStatusMessage(string message)
+        {
+            Console.WriteLine();
+            Console.WriteLine(message);
+            Console.WriteLine();
+        }
         static void AskUserForInput()
         {
-            Console.WriteLine("Please enter your Number (1 to 9)");
+            Console.WriteLine("Please enter your Number ");
 
         }
 
@@ -50,19 +56,20 @@ namespace The_15_Game
                 Console.Write(vLine);
                 for (int c = 0; c < colums; c++)
                 {
-                    if (board[r, c] == null)
-                    {
-                        Console.Write(" ");
-                    }
+                   
                     if(r == CursorRow && c == CursorColumn)
                     {
-                        Console.Write("x");
+                        Console.Write("x ");
                     }
-                    else
+                    else if (board[r,c] != null)
                     {
                         Console.Write(board[r,c]);
                     }
-                        Console.Write(board[r, c]);
+                    else
+                    {
+                        Console.Write(" ");
+                    }
+                        
                     Console.Write(vLine);
 
                 }
@@ -74,6 +81,7 @@ namespace The_15_Game
                 Console.WriteLine(corners);
 
             }
+           
 
         }
         /// <summary>
@@ -81,7 +89,7 @@ namespace The_15_Game
         /// </summary>
         /// <param name="usedNumbers">List from Game.Logic who already the chosen Numbers are!</param>
         /// <returns></returns>
-        public static int GetPlayerNumberInput(List<int> usedNumbers)
+        public static int GetPlayerNumberInput(List<int> usedNumbers, List<int> availableNumbers)
         {
 
             int number = 0;
@@ -90,50 +98,62 @@ namespace The_15_Game
             {
                 AskUserForInput();
                 Console.WriteLine($"Already used:{string.Join(",", usedNumbers)}");
+                Console.WriteLine($"Available Numbers :{string.Join(",", availableNumbers)}");
+                Console.WriteLine("Enter your Choice Number");
                 string userInput = Console.ReadLine();
 
-                if (int.TryParse(userInput, out number) && number >= 1 && number <= 9)
+                if (!int.TryParse(userInput, out number))
                 {
-                    userInputNumber = true;
+                    Console.WriteLine("Please enter one Number(1-9)!!");
+                    continue;
+                    
                 }
-                if (usedNumbers.Contains(number))
+                if (number < 1 || number >9)
                 {
-                    Console.WriteLine($"{number} is Already used!");
+                    Console.WriteLine("only Numbers from 1 to 9 allowed!");
+                    continue;
                 }
-                else
+                if (!availableNumbers.Contains(number))
                 {
-                    Console.WriteLine("Please enter one Number(1-9)!!\n");
+                    Console.WriteLine($"{number} is Already used or not availible!");
+                    continue;
                 }
+                userInputNumber = true;
 
             }
 
             return number;
 
         }
+        /// <summary>
+        /// Get user position from Arrows
+        /// </summary>
+        /// <param name="board">Gameboard that the user cann see</param>
+        /// <returns></returns>
         public static (int, int) GetBoardPositionWithArrows(int?[,] board)
         {
             int CursorRow = 0;
             int CursorColumn = 0;
             while (true)
             {
-                Console.Clear();
+                Console.SetCursorPosition(0,0);
                 DisplayBoard(board, CursorRow, CursorColumn);
                 ConsoleKeyInfo key = Console.ReadKey(true);
               
-                if(key.Key == ConsoleKey.LeftArrow && CursorRow <= 2)
+                if(key.Key == ConsoleKey.LeftArrow && CursorColumn > 0)
                 {
                      CursorColumn--;
                 }
                 
-                if (key.Key == ConsoleKey.RightArrow && CursorRow >= 0)
+                if (key.Key == ConsoleKey.RightArrow && CursorColumn <2)
                 {
                     CursorColumn++;
                 }
-                if(key.Key == ConsoleKey.UpArrow && CursorColumn <= 2)
+                if(key.Key == ConsoleKey.UpArrow && CursorRow >0)
                 {
                     CursorRow--;
                 }
-                if(key.Key == ConsoleKey.DownArrow && CursorColumn >= 0)
+                if(key.Key == ConsoleKey.DownArrow && CursorRow <2)
                 {
                     CursorRow++;
                 }

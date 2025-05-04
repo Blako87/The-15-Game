@@ -13,119 +13,156 @@ namespace The_15_Game
     {
         public static List<int> availableNumbers = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
         public static List<int> usedNumbers = new List<int>();
-        public static List<int> playerChosenNumbers = new List<int>();
-        public static int?[,] board = new int?[3, 3];
-        public static List<int> GetAvailableNumbers()
-        {
-            List<int> result = new List<int>();
-            foreach (int number in availableNumbers)
-            {
-                if (!usedNumbers.Contains(number))
-                {
-                    result.Add(number);
-                }
 
-            }
-            return result;
+        public static List<int> player1Numbers = new List<int>();
+        public static List<int> player2Numbers = new List<int>();
+
+        public static int?[,] board = new int?[3, 3];
+        /// <summary>
+        /// Printing on console the numbers from the AvailableList
+        /// </summary>
+        /// <returns></returns>
+        public static List<int> GetAvailableNumbers()
+        {                                  
+            return new List<int>(availableNumbers);
         }
+        /// <summary>
+        /// The user cann place in the Board his choice Numbers
+        /// </summary>
+        /// <param name="row">Rows</param>
+        /// <param name="col">Columns</param>
+        /// <param name="number">Player input</param>
+        /// <param name="player">Wich player is Aktualy</param>
+        /// <returns></returns>
         public static bool PlaceNumber(int row, int col, int number, int player)
         {
-            bool success = false;
 
-            if (board[row, col] == null && !usedNumbers.Contains(number))
+
+            if (board[row, col] != null || usedNumbers.Contains(number))
             {
-                success = true;
-                board[row, col] = number;
-                usedNumbers.Add(number);
-                playerChosenNumbers.Add(number);
-                Console.WriteLine(board[row, col]);
+                return false;
+
+            }
+
+            board[row, col] = number;
+            usedNumbers.Add(number);
+            availableNumbers.Remove(number);    
+            Console.WriteLine(board[row, col]);
+
+            if (player == 1)
+            {
+                player1Numbers.Add(number);
             }
             else
             {
-                success = false;
+                player2Numbers.Add(number);
             }
-            return success;
+
+            return true;
         }
-        public static bool CheckWin()
+        /// <summary>
+        /// Winning if the case is "15"
+        /// </summary>
+        /// <param name="row">Rows</param>
+        /// <param name="col">Colums</param>
+        /// <returns></returns>
+        public static bool CheckWin(int row, int col)
         {
-            bool win = false;
-            int row = 3;
-            int col = 3;
             int winSum = 15;
-            int sum = 0;
-            // vertical winings
+
+            //  Check all rows
             for (int r = 0; r < row; r++)
             {
-                sum = 0;
+                int sum = 0;
+                bool allFilled = true;
+
                 for (int c = 0; c < col; c++)
                 {
-                    if (board[r, c] != null)
+                    if (board[r, c] == null)
                     {
-                        sum += (int)board[r, c];
-                        if (winSum == sum)
-                        {
-                            win = true;
-                        }
-
+                        allFilled = false;
+                        break;
                     }
+
+                    sum += (int)board[r, c];
                 }
 
+                if (allFilled && sum == winSum)
+                    return true;
             }
-            // Horizontal winnings
+
+            // Check all columns
             for (int c = 0; c < col; c++)
             {
+                int sum = 0;
+                bool allFilled = true;
+
                 for (int r = 0; r < row; r++)
                 {
-                    if (board[r, c] != null)
+                    if (board[r, c] == null)
                     {
-                        sum += (int)board[r, c];
-                        if (winSum == sum)
-                        {
-                            win = true;
-                        }
-
+                        allFilled = false;
+                        break;
                     }
+
+                    sum += (int)board[r, c];
                 }
 
+                if (allFilled && sum == winSum)
+                    return true;
             }
-            // diagonal winings Left top to right Bottom
-            for (int r = 0; r < row; r++)
+
+            //  Diagonal: top-left to bottom-right
+            int diagSum1 = 0;
+            bool diagFilled1 = true;
+            for (int i = 0; i < row; i++)
             {
-                if (board[r, r] != null)
+                if (board[i, i] == null)
                 {
-                    sum += (int)board[r, r];
-                    if (winSum == sum)
-                    {
-                        win = true;
-                    }
-
+                    diagFilled1 = false;
+                    break;
                 }
 
+                diagSum1 += (int)board[i, i];
             }
-            // diagonal winnings from Bottom left to the right top
-            for (int r = 0; r < row; r++)
+
+            if (diagFilled1 && diagSum1 == winSum)
+                return true;
+
+            //  Diagonal: top-right to bottom-left
+            int diagSum2 = 0;
+            bool diagFilled2 = true;
+            for (int i = 0; i < row; i++)
             {
-                int colIndex = row - 1 - r;
-                if (board[r, r ] != null)
+                int j = col - 1 - i;
+                if (board[i, j] == null)
                 {
-                    sum += (int)board[r, colIndex];
-                    if (winSum == sum)
-                    {
-                        win = true;
-                    }
-
+                    diagFilled2 = false;
+                    break;
                 }
+
+                diagSum2 += (int)board[i, j];
             }
 
-            return win;
+            if (diagFilled2 && diagSum2 == winSum)
+                return true;
+
+            // No win found
+            return false;
         }
-        public static bool IsBoardFull(int rows , int cols)
+        /// <summary>
+        /// Reprezenting a Draw
+        /// </summary>
+        /// <param name="rows">Rows</param>
+        /// <param name="cols">Columns</param>
+        /// <returns></returns>
+        public static bool IsBoardFull(int rows, int cols)
         {
-            for (int r = 0; r < rows; r++)
+            for (int r = 0; r < board.GetLength(0); r++)
             {
-                for (int c = 0; c < cols; c++)
+                for (int c = 0; c < board.GetLength(1); c++)
                 {
-                    if (board[r,c] == null)
+                    if (board[r, c] == null)
                     {
                         return false;
                     }

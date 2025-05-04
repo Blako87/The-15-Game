@@ -13,25 +13,46 @@ namespace The_15_Game
             GameUi.WelcomeMessage();
             Console.WriteLine("Press any key to continue");
             Console.ReadKey(true);
-            int?[,] board = GameLogic.board;
-            (int CursorRow, int CursorColumn) = GameUi.GetBoardPositionWithArrows(board);
-            List<int> usedNumbers = GameLogic.usedNumbers;
-            int number = GameUi.GetPlayerNumberInput(usedNumbers);
             int player = 1;
-            bool success = GameLogic.PlaceNumber(CursorRow, CursorColumn, number, player);
-            GameLogic.CheckWin();
-            GameLogic.IsBoardFull(3, 3);
-            Console.WriteLine(CursorRow);
-            Console.WriteLine(CursorColumn);
-            GameLogic.GetAvailableNumbers();
-           
-           
-            
-           
-                                   
-            
 
-           
+            while (true)
+            {
+                Console.Clear();
+                GameUi.DisplayBoard(GameLogic.board, -1, -1);
+
+                GameUi.GameStatusMessage($"Player {player}'s turn");
+                List<int> usedNumbers = GameLogic.usedNumbers;
+                List<int> availableNumbers = GameLogic.GetAvailableNumbers();
+                (int CursorRow, int CursorColumn) = GameUi.GetBoardPositionWithArrows(GameLogic.board);
+                int number = GameUi.GetPlayerNumberInput(usedNumbers, availableNumbers);
+                bool success = GameLogic.PlaceNumber(CursorRow, CursorColumn, number, player);
+
+                if (!success)
+                {
+                    Console.Clear();
+                    GameUi.DisplayBoard(GameLogic.board, -1, -1);
+                    GameUi.GameStatusMessage("Invalid Move. Try again");
+                    continue;
+                }
+
+                Console.Clear();
+                GameUi.DisplayBoard(GameLogic.board, -1, -1);
+                if (GameLogic.CheckWin(3, 3))
+                {
+
+                    GameUi.GameStatusMessage("Congratulation you win!");
+                    break;
+                }
+                if (GameLogic.IsBoardFull(3, 3))
+                {
+
+                    GameUi.GameStatusMessage("Its a Draw");
+                    break;
+                }
+                player = player == 1 ? 2 : 1;
+
+            }
+
         }
 
     }
