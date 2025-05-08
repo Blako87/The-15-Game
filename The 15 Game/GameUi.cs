@@ -21,7 +21,7 @@ namespace The_15_Game
         }
         public static void GameStatusMessage(string message)
         {
-            Console.WriteLine();
+            
             Console.WriteLine(message);
             Console.WriteLine();
         }
@@ -29,6 +29,11 @@ namespace The_15_Game
         {
             Console.WriteLine("Please enter your Number ");
 
+        }
+        static void AskUserForGridInput()
+        {
+            Console.WriteLine("Please enter the size of the grid (odd!)");
+            Console.WriteLine("like 3x3 !");
         }
 
         /// <summary>
@@ -59,7 +64,7 @@ namespace The_15_Game
                    
                     if(r == CursorRow && c == CursorColumn)
                     {
-                        Console.Write("x ");
+                        Console.Write("x");
                     }
                     else if (board[r,c] != null)
                     {
@@ -84,12 +89,41 @@ namespace The_15_Game
            
 
         }
+        public static int GetPlayerGridsizeInput()
+        {
+           
+            int sizeNumber = 0;
+           
+            bool userInputSizeNumber = false;
+            while (!userInputSizeNumber)
+            {
+                AskUserForGridInput();
+                string userSizeinput = Console.ReadLine();
+                if (! int.TryParse(userSizeinput,out sizeNumber))
+                {
+                    Console.WriteLine("please enter a valid number:3,4 etc....");
+                    continue;
+                }
+                if (sizeNumber== 1 || sizeNumber ==2)
+                {
+                    Console.WriteLine("Minimum Gridsize 3x3");
+                    continue;
+                }
+                if (sizeNumber % 2 == 0)
+                {
+                    Console.WriteLine("Gridsize musst be odd not Even!");
+                    continue;
+                }
+                userInputSizeNumber = true;
+            }
+            return sizeNumber;
+        }
         /// <summary>
         /// User input handle
         /// </summary>
         /// <param name="usedNumbers">List from Game.Logic who already the chosen Numbers are!</param>
         /// <returns></returns>
-        public static int GetPlayerNumberInput(List<int> usedNumbers, List<int> availableNumbers)
+        public static int GetPlayerNumberInput(List<int> usedNumbers, List<int> availableNumbers,List<int> player1Numbers,List<int>player2Numbers,int player)
         {
 
             int number = 0;
@@ -97,7 +131,15 @@ namespace The_15_Game
             while (!userInputNumber)
             {
                 AskUserForInput();
-                Console.WriteLine($"Already used:{string.Join(",", usedNumbers)}");
+                if (player ==1)
+                {
+                    Console.WriteLine($"Player1 used:{string.Join(",", player1Numbers)}");
+                }
+                else
+                {
+                    Console.WriteLine($"Player2 used:{string.Join(",", player2Numbers)}");
+                }
+                    
                 Console.WriteLine($"Available Numbers :{string.Join(",", availableNumbers)}");
                 Console.WriteLine("Enter your Choice Number");
                 string userInput = Console.ReadLine();
@@ -145,7 +187,7 @@ namespace The_15_Game
                      CursorColumn--;
                 }
                 
-                if (key.Key == ConsoleKey.RightArrow && CursorColumn <2)
+                if (key.Key == ConsoleKey.RightArrow && CursorColumn <board.GetLength(1))
                 {
                     CursorColumn++;
                 }
@@ -153,7 +195,7 @@ namespace The_15_Game
                 {
                     CursorRow--;
                 }
-                if(key.Key == ConsoleKey.DownArrow && CursorRow <2)
+                if(key.Key == ConsoleKey.DownArrow && CursorRow <board.GetLength(1))
                 {
                     CursorRow++;
                 }
@@ -161,17 +203,17 @@ namespace The_15_Game
                 {
                     CursorColumn = 0;
                 }
-                if(CursorColumn > 2)
+                if(CursorColumn >= board.GetLength(1))
                 {
-                    CursorColumn = 2;
+                    CursorColumn = board.GetLength(1) -1;
                 }
                 if(CursorRow < 0)
                 {
                     CursorRow = 0;
                 }
-                if(CursorRow > 2)
+                if(CursorRow >= board.GetLength(1))
                 {
-                    CursorRow = 2;
+                    CursorRow = board.GetLength(1)-1;
                 }
                 if (key.Key == ConsoleKey.Enter)
                 {
