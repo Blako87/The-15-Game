@@ -87,7 +87,62 @@ namespace The_15_Game
 
             return false;
         }
-
+        public static (int row, int col, int number) GetKiMove(int?[,] board,int number,int winNumber, List<int> availableNumbers)
+        {
+            int row = board.GetLength(0);
+            int col = board.GetLength(1);
+            return (row,col,number);
+        }
+        private static bool KiCanYouWin(int?[,] board,List<int> player2Numbers,List<int> availableNumbers, int gameWinNumber)
+        {
+            int row = board.GetLength(0);
+            int col = board.GetLength(1);
+            int sumNumbers = 0;
+            gameWinNumber = 0;
+            int winNumber = 0;
+            foreach(int number in player2Numbers)
+            {
+                sumNumbers += number;
+            }
+            foreach (int number in availableNumbers) 
+            {
+                if (sumNumbers + number == gameWinNumber)
+                {
+                    winNumber = number;
+                }
+            }
+            for (int r = 0; r < row; r++)
+            {
+                               
+                for (int c = 0; c < col; c++)
+                {
+                    if (board[r, c] == null)
+                    {
+                        
+                        break;
+                    }
+                                       
+                }
+                               
+            }
+            return true;
+        }
+        private static bool KiCanPlayerWin(int?[,]board,List<int> player1Numbers)
+        {
+            return true;
+        }
+        private static (int row,int col,int number)? KiPlayWinningMove(int?[,] board,int number)
+        {
+            return null;
+        }
+        private static (int row,int col,int number)? KiBlockPlayerMove(int?[,]board,int number)
+        {
+            return null;
+        }
+        private static (int row,int col,int number) GetRandomMove(int row,int col,int rndNumber)
+        {
+            return (row,col,rndNumber);
+        }
 
         /// <summary>
         /// Winning if the case is "15"
