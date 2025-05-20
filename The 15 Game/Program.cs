@@ -30,46 +30,57 @@ namespace The_15_Game
             {
                 Console.Clear();
                 GameUi.DisplayBoard(board, -1, -1);
-               
+
                 GameUi.GameStatusMessage($"Player {player} please choice your cube with Arrows and press enter");
                 GameUi.GameStatusMessage($"Player {player}'s turn");
                 GameLogic.GetUsedNumbers(usedNumbers);
                 GameLogic.GetAvailableNumbers(availableNumbers);
-                (int CursorRow, int CursorColumn) = GameUi.GetBoardPositionWithArrows(board);
-                int number = GameUi.GetPlayerNumberInput(usedNumbers, availableNumbers, player1Numbers, player2Numbers, player);
-                bool magicNumber = GameLogic.CheckCenterGridImputNumber(gridSize, CursorRow, CursorColumn, number);
-                if (magicNumber)
+                if (player == 1)
                 {
+                    (int CursorRow, int CursorColumn) = GameUi.GetBoardPositionWithArrows(board);
+                    int number = GameUi.GetPlayerNumberInput(usedNumbers, availableNumbers, player1Numbers, player2Numbers, player);
+                    bool magicNumber = GameLogic.CheckCenterGridImputNumber(gridSize, CursorRow, CursorColumn, number);
+                    if (magicNumber)
+                    {
 
-                    GameUi.GameStatusMessage("To easy please place this number in another place!");
-                    Thread.Sleep(2000);
-                    continue;
+                        GameUi.GameStatusMessage("To easy please place this number in another place!");
+                        Thread.Sleep(2000);
+                        continue;
+                    }
+                    bool success = GameLogic.PlaceNumber(board, CursorRow, CursorColumn, number, player, availableNumbers, usedNumbers, player1Numbers, player2Numbers);
+                    if (!success)
+                    {
+                        Console.Clear();
+                        GameUi.DisplayBoard(board, -1, -1);
+                        GameUi.GameStatusMessage("Invalid Move. Try again");
+                        continue;
+                    }
                 }
-                bool success = GameLogic.PlaceNumber(board, CursorRow, CursorColumn, number, player, availableNumbers, usedNumbers, player1Numbers, player2Numbers);
-                
-                if (!success)
+                else
                 {
-                    Console.Clear();
-                    GameUi.DisplayBoard(board, -1, -1);
-                    GameUi.GameStatusMessage("Invalid Move. Try again");
-                    continue;
+                    var (row, col, number) = GameLogic.GetKiMove(board, WINNNUMBER, availableNumbers);
+                    GameLogic.PlaceNumber(board, row, col, number, player, availableNumbers, usedNumbers, player1Numbers, player2Numbers);
                 }
-                
+
+
+
+
+
                 Console.Clear();
                 GameUi.DisplayBoard(board, -1, -1);
-                if (GameLogic.CheckWin(board,WINNNUMBER))
+                if (GameLogic.CheckWin(board, WINNNUMBER))
                 {
 
                     GameUi.GameStatusMessage("Congratulation you win!");
                     break;
                 }
-                if (GameLogic.IsBoardFull(board, CursorRow, CursorColumn))
+                if (GameLogic.IsBoardFull(board, rows, cols))
                 {
 
                     GameUi.GameStatusMessage("Its a Draw");
                     break;
                 }
-                
+
                 player = player == 1 ? 2 : 1;
 
             }

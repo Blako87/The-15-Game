@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics.Eventing.Reader;
 using System.Linq;
 using System.Security.Permissions;
 using System.Text;
@@ -74,74 +75,183 @@ namespace The_15_Game
         /// <param name="CursorRow">d</param>
         /// <param name="CursorColum">d</param>
         /// <returns></returns>
-        public static bool CheckCenterGridImputNumber( int gridSize, int CursorRow, int CursorColum,int number)
+        public static bool CheckCenterGridImputNumber(int gridSize, int CursorRow, int CursorColum, int number)
         {
-            
+
             int centerGrid = gridSize / 2;
             int magicNumber = 5;
 
-            if (centerGrid == CursorRow && centerGrid == CursorColum && magicNumber ==number)
+            if (centerGrid == CursorRow && centerGrid == CursorColum && magicNumber == number)
             {
                 return true;
             }
 
             return false;
         }
-        public static (int row, int col, int number) GetKiMove(int?[,] board,int number,int winNumber, List<int> availableNumbers)
+        public static (int row, int col, int number) GetKiMove(int?[,] board, int winNumber, List<int> availableNumbers)
         {
-            int row = board.GetLength(0);
-            int col = board.GetLength(1);
-            return (row,col,number);
+            var winMove = KiCanYouWin(board,availableNumbers,winNumber);
+            if (winMove != null)
+            {
+                return winMove.Value;
+            }
+            return GetRandomMove(board,availableNumbers);
+            
         }
-        private static bool KiCanYouWin(int?[,] board,List<int> player2Numbers,List<int> availableNumbers, int gameWinNumber)
+        private static (int row, int col, int missingNumber)? KiCanYouWin(int?[,] board, List<int> availableNumbers, int gameWinNumber)
         {
             int row = board.GetLength(0);
             int col = board.GetLength(1);
-            int sumNumbers = 0;
-            gameWinNumber = 0;
-            int winNumber = 0;
-            foreach(int number in player2Numbers)
-            {
-                sumNumbers += number;
-            }
-            foreach (int number in availableNumbers) 
-            {
-                if (sumNumbers + number == gameWinNumber)
-                {
-                    winNumber = number;
-                }
-            }
+
+            int missingNumber = 0;
+            //checking Rows
             for (int r = 0; r < row; r++)
             {
-                               
+                int sumNumbers = 0;
+                int nullRow = -1;
+                int nullCol = -1;
+                int nullCounter = 0;
                 for (int c = 0; c < col; c++)
                 {
                     if (board[r, c] == null)
                     {
-                        
-                        break;
+                        nullCounter++;
+                        nullRow = r;
+                        nullCol = c;
+
                     }
-                                       
+                    else
+                    {
+                        sumNumbers += (int)board[r, c];
+                    }
+
                 }
-                               
+                if (nullCounter == 1)
+                {
+                    missingNumber = gameWinNumber - sumNumbers;
+                    if (availableNumbers.Contains(missingNumber))
+                    {
+                        return (nullRow, nullCol, missingNumber);
+                    }
+                }
             }
-            return true;
-        }
-        private static bool KiCanPlayerWin(int?[,]board,List<int> player1Numbers)
-        {
-            return true;
-        }
-        private static (int row,int col,int number)? KiPlayWinningMove(int?[,] board,int number)
-        {
+            //Checking Cols
+
+            for (int c = 0; c < col; c++)
+            {
+                int sumNumbers = 0;
+                int nullRow = -1;
+                int nullCol = -1;
+                int nullCounter = 0;
+                for (int r = 0; r < row; r++)
+                {
+                    if (board[r, c] == null)
+                    {
+                        nullCounter++;
+                        nullRow = r;
+                        nullCol = c;
+
+                    }
+                    else
+                    {
+                        sumNumbers += (int)board[r, c];
+                    }
+
+                }
+                if (nullCounter == 1)
+                {
+                    missingNumber = gameWinNumber - sumNumbers;
+                    if (availableNumbers.Contains(missingNumber))
+                    {
+                        return (nullRow, nullCol, missingNumber);
+                    }
+                }
+            }
+            //check diagonals left top to bottom
+            for (int i = 0; i < row; i++)
+            {
+                int sumNumbers = 0;
+                int nullRow = -1;
+                int nullCol = -1;
+                int nullCounter = 0;
+
+                if (board[i, i] == null)
+                {
+                    nullCounter++;
+                    nullRow = i;
+                    nullCol = i;
+
+                }
+                else
+                {
+                    sumNumbers += (int)board[i, i];
+                }
+
+                if (nullCounter == 1)
+                {
+                    missingNumber = gameWinNumber - sumNumbers;
+                    if (availableNumbers.Contains(missingNumber))
+                    {
+                        return (nullRow, nullCol, missingNumber);
+                    }
+                }
+            }
+            for (int i = 0; i < row; i++)
+            {
+                int sumNumbers = 0;
+                int nullRow = -1;
+                int nullCol = -1;
+                int nullCounter = 0;
+                int j = col - 1 - i;
+                if (board[i, j] == null)
+                {
+                    nullCounter++;
+                    nullRow = i;
+                    nullCol = j;
+
+                }
+                else
+                {
+                    sumNumbers += (int)board[i, j];
+                }
+
+                if (nullCounter == 1)
+                {
+                    missingNumber = gameWinNumber - sumNumbers;
+                    if (availableNumbers.Contains(missingNumber))
+                    {
+                        return (nullRow, nullCol, missingNumber);
+                    }
+                }
+            }
             return null;
         }
-        private static (int row,int col,int number)? KiBlockPlayerMove(int?[,]board,int number)
+       
+        private static (int row, int col, int number) GetRandomMove(int?[,] board, List<int> availableNumbers)
         {
-            return null;
-        }
-        private static (int row,int col,int number) GetRandomMove(int row,int col,int rndNumber)
-        {
-            return (row,col,rndNumber);
+            int row = board.GetLength(0);
+            int col = board.GetLength(1);
+            List<(int row, int col)> emptyCells = new List<(int, int)>();
+            Random random = new Random();
+           
+            for (int r = 0; r < row; r++)
+            {
+
+                for (int c = 0; c < col; c++)
+                {
+                    if (board[r, c] == null)
+                    {
+                        emptyCells.Add((r, c));
+
+                    }
+
+
+                }
+
+            }
+            var (emptyRow, emptyCol) = emptyCells[random.Next(emptyCells.Count)];
+            int chossenNumber = availableNumbers[random.Next(availableNumbers.Count)];
+            return (emptyRow, emptyCol, chossenNumber);
         }
 
         /// <summary>
