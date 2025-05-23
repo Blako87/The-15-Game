@@ -12,6 +12,9 @@ namespace The_15_Game
 
         static void Main(string[] args)
         {
+            const int CENTERNUMBERIMPUT = 5;
+            const int SECONDPLAYER = 2;
+            const int FIRSTPLAYER = 1;
             const int WINNNUMBER = 15;
             List<int> availableNumbers = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             List<int> usedNumbers = new List<int>();
@@ -22,6 +25,7 @@ namespace The_15_Game
             int rows = gridSize;
             int cols = rows;
             int?[,] board = new int?[rows, cols];
+
             Console.WriteLine("Press any key to continue");
             Console.ReadKey(true);
             int player = 1;
@@ -35,11 +39,11 @@ namespace The_15_Game
                 GameUi.GameStatusMessage($"Player {player}'s turn");
                 GameLogic.GetUsedNumbers(usedNumbers);
                 GameLogic.GetAvailableNumbers(availableNumbers);
-                if (player == 1)
+                if (player == FIRSTPLAYER)
                 {
-                    (int CursorRow, int CursorColumn) = GameUi.GetBoardPositionWithArrows(board);
+                    (int cursorRow, int cursorColumn) = GameUi.GetBoardPositionWithArrows(board);
                     int number = GameUi.GetPlayerNumberInput(usedNumbers, availableNumbers, player1Numbers, player2Numbers, player);
-                    bool magicNumber = GameLogic.CheckCenterGridImputNumber(gridSize, CursorRow, CursorColumn, number);
+                    bool magicNumber = GameLogic.CheckCenterGridImputNumber(gridSize, cursorRow, cursorColumn, number,CENTERNUMBERIMPUT);
                     if (magicNumber)
                     {
 
@@ -47,7 +51,7 @@ namespace The_15_Game
                         Thread.Sleep(2000);
                         continue;
                     }
-                    bool success = GameLogic.PlaceNumber(board, CursorRow, CursorColumn, number, player, availableNumbers, usedNumbers, player1Numbers, player2Numbers);
+                    bool success = GameLogic.PlaceNumber(board, cursorRow, cursorColumn, number, player, availableNumbers, usedNumbers, player1Numbers, player2Numbers);
                     if (!success)
                     {
                         Console.Clear();
@@ -68,10 +72,10 @@ namespace The_15_Game
 
                 Console.Clear();
                 GameUi.DisplayBoard(board, -1, -1);
-                if (GameLogic.CheckWin(board, WINNNUMBER))
+                if (GameLogic.CheckWin(board, WINNNUMBER,player, player1Numbers, player2Numbers))
                 {
 
-                    GameUi.GameStatusMessage("Congratulation you win!");
+                    GameUi.GameStatusMessage($"Congratulation Player {player} you win!");
                     break;
                 }
                 if (GameLogic.IsBoardFull(board, rows, cols))
@@ -81,7 +85,7 @@ namespace The_15_Game
                     break;
                 }
 
-                player = player == 1 ? 2 : 1;
+                player = player == FIRSTPLAYER ? SECONDPLAYER : FIRSTPLAYER;
 
             }
 

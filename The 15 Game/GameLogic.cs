@@ -75,11 +75,11 @@ namespace The_15_Game
         /// <param name="CursorRow">d</param>
         /// <param name="CursorColum">d</param>
         /// <returns></returns>
-        public static bool CheckCenterGridImputNumber(int gridSize, int CursorRow, int CursorColum, int number)
+        public static bool CheckCenterGridImputNumber(int gridSize, int CursorRow, int CursorColum, int number,int magicNumber)
         {
 
             int centerGrid = gridSize / 2;
-            int magicNumber = 5;
+            
 
             if (centerGrid == CursorRow && centerGrid == CursorColum && magicNumber == number)
             {
@@ -90,13 +90,13 @@ namespace The_15_Game
         }
         public static (int row, int col, int number) GetKiMove(int?[,] board, int winNumber, List<int> availableNumbers)
         {
-            var winMove = KiCanYouWin(board,availableNumbers,winNumber);
+            var winMove = KiCanYouWin(board, availableNumbers, winNumber);
             if (winMove != null)
             {
                 return winMove.Value;
             }
-            return GetRandomMove(board,availableNumbers);
-            
+            return GetRandomMove(board, availableNumbers);
+
         }
         private static (int row, int col, int missingNumber)? KiCanYouWin(int?[,] board, List<int> availableNumbers, int gameWinNumber)
         {
@@ -226,14 +226,14 @@ namespace The_15_Game
             }
             return null;
         }
-       
+
         private static (int row, int col, int number) GetRandomMove(int?[,] board, List<int> availableNumbers)
         {
             int row = board.GetLength(0);
             int col = board.GetLength(1);
             List<(int row, int col)> emptyCells = new List<(int, int)>();
             Random random = new Random();
-           
+
             for (int r = 0; r < row; r++)
             {
 
@@ -260,16 +260,19 @@ namespace The_15_Game
         /// <param name="row">Rows</param>
         /// <param name="col">Colums</param>
         /// <returns></returns>
-        public static bool CheckWin(int?[,] board, int winNumber)
+        public static bool CheckWin(int?[,] board, int winNumber, int player, List<int> player1Numbers, List<int> player2Numbers)
         {
             int row = board.GetLength(0);
             int col = board.GetLength(1);
             int winSum = winNumber;
             int sum = 0;
+            int playerSum = 0;
+            List<int> currentPlayerNumbers = player == 1 ? player1Numbers : player2Numbers;
             //  Check all rows
             for (int r = 0; r < row; r++)
             {
-
+                
+               
                 bool allFilled = true;
 
                 for (int c = 0; c < col; c++)
@@ -279,11 +282,16 @@ namespace The_15_Game
                         allFilled = false;
                         break;
                     }
-
-                    sum += (int)board[r, c];
+                    int value = (int)board[r, c];
+                    sum += value;
+                    if (currentPlayerNumbers.Contains(value))
+                    {
+                        playerSum += value;
+                    }
                 }
+               
 
-                if (allFilled && sum == winSum)
+                if (allFilled && sum == winSum && playerSum == winSum)
                 {
                     return true;
                 }
@@ -293,7 +301,7 @@ namespace The_15_Game
             // Check all columns
             for (int c = 0; c < col; c++)
             {
-
+                
                 bool allFilled = true;
 
                 for (int r = 0; r < row; r++)
@@ -303,11 +311,16 @@ namespace The_15_Game
                         allFilled = false;
                         break;
                     }
+                    int value = (int)board[r, c];
+                    sum += value;
+                    if (currentPlayerNumbers.Contains(value))
+                    {
+                        playerSum += value;
+                    }
 
-                    sum += (int)board[r, c];
                 }
 
-                if (allFilled && sum == winSum)
+                if (allFilled && sum == winSum && playerSum == winSum)
                 {
                     return true;
                 }
@@ -316,6 +329,7 @@ namespace The_15_Game
 
             //  Diagonal: top-left to bottom-right
             int diagSum1 = 0;
+            int playerDiagSum1 = 0;
             bool diagFilled1 = true;
             for (int i = 0; i < row; i++)
             {
@@ -324,11 +338,20 @@ namespace The_15_Game
                     diagFilled1 = false;
                     break;
                 }
-
-                diagSum1 += (int)board[i, i];
+                else
+                {
+                    int value = (int)board[i, i];
+                    diagSum1 += value;
+                    if (currentPlayerNumbers.Contains(value))
+                    {
+                        playerDiagSum1 += value;
+                    }
+                }
+             
+               
             }
 
-            if (diagFilled1 && diagSum1 == winSum)
+            if (diagFilled1 && diagSum1 == winSum && playerDiagSum1 == winSum)
             {
                 return true;
             }
@@ -336,6 +359,7 @@ namespace The_15_Game
 
             //  Diagonal: top-right to bottom-left
             int diagSum2 = 0;
+            int playerDiagSum2 = 0;
             bool diagFilled2 = true;
             for (int i = 0; i < row; i++)
             {
@@ -345,11 +369,20 @@ namespace The_15_Game
                     diagFilled2 = false;
                     break;
                 }
-
-                diagSum2 += (int)board[i, j];
+                else
+                {
+                    int value = (int)board[i, j];
+                    diagSum2 += value;
+                    if (currentPlayerNumbers.Contains(value))
+                    {
+                        playerDiagSum2 += value;
+                    }
+                }
+               
+                
             }
 
-            if (diagFilled2 && diagSum2 == winSum)
+            if (diagFilled2 && diagSum2 == winSum && playerDiagSum2 == winSum)
             {
                 return true;
             }

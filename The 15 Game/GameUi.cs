@@ -21,7 +21,7 @@ namespace The_15_Game
         }
         public static void GameStatusMessage(string message)
         {
-            
+
             Console.WriteLine(message);
             Console.WriteLine();
         }
@@ -40,9 +40,9 @@ namespace The_15_Game
         /// a grid for user interface 
         /// </summary>
         /// <param name="board">2d Array to display board</param>
-        public static void DisplayBoard(int?[,] board, int CursorRow, int CursorColumn)
+        public static void DisplayBoard(int?[,] board, int cursorRow, int cursorColumn)
         {
-            
+
             int rows = board.GetLength(0);
             int colums = board.GetLength(1);
             string gridlines = "+-";
@@ -61,20 +61,20 @@ namespace The_15_Game
                 Console.Write(vLine);
                 for (int c = 0; c < colums; c++)
                 {
-                   
-                    if(r == CursorRow && c == CursorColumn)
+
+                    if (r == cursorRow && c == cursorColumn)
                     {
                         Console.Write("x");
                     }
-                    else if (board[r,c] != null)
+                    else if (board[r, c] != null)
                     {
-                        Console.Write(board[r,c]);
+                        Console.Write(board[r, c]);
                     }
                     else
                     {
                         Console.Write(" ");
                     }
-                        
+
                     Console.Write(vLine);
 
                 }
@@ -86,25 +86,25 @@ namespace The_15_Game
                 Console.WriteLine(corners);
 
             }
-           
+
 
         }
         public static int GetPlayerGridsizeInput()
         {
-           
+
             int sizeNumber = 0;
-           
+
             bool userInputSizeNumber = false;
             while (!userInputSizeNumber)
             {
                 AskUserForGridInput();
                 string userSizeinput = Console.ReadLine();
-                if (! int.TryParse(userSizeinput,out sizeNumber))
+                if (!int.TryParse(userSizeinput, out sizeNumber))
                 {
                     Console.WriteLine("please enter a valid number:3,4 etc....");
                     continue;
                 }
-                if (sizeNumber== 1 || sizeNumber ==2)
+                if (sizeNumber == 1 || sizeNumber == 2)
                 {
                     Console.WriteLine("Minimum Gridsize 3x3");
                     continue;
@@ -123,7 +123,7 @@ namespace The_15_Game
         /// </summary>
         /// <param name="usedNumbers">List from Game.Logic who already the chosen Numbers are!</param>
         /// <returns></returns>
-        public static int GetPlayerNumberInput(List<int> usedNumbers, List<int> availableNumbers,List<int> player1Numbers,List<int>player2Numbers,int player)
+        public static int GetPlayerNumberInput(List<int> usedNumbers, List<int> availableNumbers, List<int> player1Numbers, List<int> player2Numbers, int player)
         {
 
             int number = 0;
@@ -131,7 +131,7 @@ namespace The_15_Game
             while (!userInputNumber)
             {
                 AskUserForInput();
-                if (player ==1)
+                if (player == 1)
                 {
                     Console.WriteLine($"Player1 used:{string.Join(",", player1Numbers)}");
                 }
@@ -139,8 +139,9 @@ namespace The_15_Game
                 {
                     Console.WriteLine($"Player2 used:{string.Join(",", player2Numbers)}");
                 }
-                    
+
                 Console.WriteLine($"Available Numbers :{string.Join(",", availableNumbers)}");
+                Console.WriteLine($"Already usedNumbers:{string.Join(",", usedNumbers)}");
                 Console.WriteLine("Enter your Choice Number");
                 string userInput = Console.ReadLine();
 
@@ -148,9 +149,9 @@ namespace The_15_Game
                 {
                     Console.WriteLine("Please enter one Number(1-9)!!");
                     continue;
-                    
+
                 }
-                if (number < 1 || number >9)
+                if (number < 1 || number > 9)
                 {
                     Console.WriteLine("only Numbers from 1 to 9 allowed!");
                     continue;
@@ -178,42 +179,42 @@ namespace The_15_Game
             int CursorColumn = 0;
             while (true)
             {
-                Console.SetCursorPosition(0,0);
+                Console.SetCursorPosition(0, 0);
                 DisplayBoard(board, CursorRow, CursorColumn);
                 ConsoleKeyInfo key = Console.ReadKey(true);
-              
-                if(key.Key == ConsoleKey.LeftArrow && CursorColumn > 0)
+
+                if (key.Key == ConsoleKey.LeftArrow && CursorColumn > 0)
                 {
-                     CursorColumn--;
+                    CursorColumn--;
                 }
-                
-                if (key.Key == ConsoleKey.RightArrow && CursorColumn <board.GetLength(1))
+
+                if (key.Key == ConsoleKey.RightArrow && CursorColumn < board.GetLength(1))
                 {
                     CursorColumn++;
                 }
-                if(key.Key == ConsoleKey.UpArrow && CursorRow >0)
+                if (key.Key == ConsoleKey.UpArrow && CursorRow > 0)
                 {
                     CursorRow--;
                 }
-                if(key.Key == ConsoleKey.DownArrow && CursorRow <board.GetLength(1))
+                if (key.Key == ConsoleKey.DownArrow && CursorRow < board.GetLength(1))
                 {
                     CursorRow++;
                 }
-                if(CursorColumn < 0)
+                if (CursorColumn < 0)
                 {
                     CursorColumn = 0;
                 }
-                if(CursorColumn >= board.GetLength(1))
+                if (CursorColumn >= board.GetLength(1))
                 {
-                    CursorColumn = board.GetLength(1) -1;
+                    CursorColumn = board.GetLength(1) - 1;
                 }
-                if(CursorRow < 0)
+                if (CursorRow < 0)
                 {
                     CursorRow = 0;
                 }
-                if(CursorRow >= board.GetLength(1))
+                if (CursorRow >= board.GetLength(1))
                 {
-                    CursorRow = board.GetLength(1)-1;
+                    CursorRow = board.GetLength(1) - 1;
                 }
                 if (key.Key == ConsoleKey.Enter)
                 {
@@ -221,9 +222,8 @@ namespace The_15_Game
                 }
 
             }
-            
-            return (CursorRow,CursorColumn);
+
+            return (CursorRow, CursorColumn);
         }
     }
 }
-             
