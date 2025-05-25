@@ -102,11 +102,19 @@ namespace The_15_Game
         {
             int row = board.GetLength(0);
             int col = board.GetLength(1);
+           
+            return KiCannYouWinRows(board, availableNumbers, gameWinNumber, row, col) ??
+                   KiCannYouWinCols(board, availableNumbers, gameWinNumber,  row, col) ??
+                   KiCannYouWinDiagonals(board, availableNumbers, gameWinNumber,  row, col) ??
+                   KiCannYouWinAntiDiagonals(board, availableNumbers, gameWinNumber, row, col);
 
+        }
+        private static (int row, int col, int missingNumber)? KiCannYouWinRows(int?[,] board, List<int> availableNumbers, int gameWinNumber,int row,int col)
+        {
             int missingNumber = 0;
-            //checking Rows
             for (int r = 0; r < row; r++)
             {
+               
                 int sumNumbers = 0;
                 int nullRow = -1;
                 int nullCol = -1;
@@ -135,10 +143,14 @@ namespace The_15_Game
                     }
                 }
             }
-            //Checking Cols
-
+            return null;
+        }
+        private static (int row, int col, int missingNumber)? KiCannYouWinCols(int?[,] board, List<int> availableNumbers, int gameWinNumber, int row, int col)
+        {
+            int missingNumber = 0;
             for (int c = 0; c < col; c++)
             {
+                
                 int sumNumbers = 0;
                 int nullRow = -1;
                 int nullCol = -1;
@@ -167,9 +179,14 @@ namespace The_15_Game
                     }
                 }
             }
-            //check diagonals left top to bottom
+            return null;
+        }
+        private static (int row, int col, int missingNumber)? KiCannYouWinDiagonals(int?[,] board, List<int> availableNumbers, int gameWinNumber, int row, int col)
+        {
+            int missingNumber = 0;
             for (int i = 0; i < row; i++)
             {
+                
                 int sumNumbers = 0;
                 int nullRow = -1;
                 int nullCol = -1;
@@ -196,8 +213,14 @@ namespace The_15_Game
                     }
                 }
             }
+            return null;
+        }
+        private static (int row, int col, int missingNumber)? KiCannYouWinAntiDiagonals(int?[,] board, List<int> availableNumbers, int gameWinNumber, int row, int col)
+        {
+            int missingNumber = 0;
             for (int i = 0; i < row; i++)
             {
+               
                 int sumNumbers = 0;
                 int nullRow = -1;
                 int nullCol = -1;
@@ -268,11 +291,15 @@ namespace The_15_Game
             int sum = 0;
             int playerSum = 0;
             List<int> currentPlayerNumbers = player == 1 ? player1Numbers : player2Numbers;
-            //  Check all rows
+
+            return CheckRowsWin(board, winNumber, player, currentPlayerNumbers, row, col, sum, playerSum, winSum) || CheckColsWin(board, winNumber, player, currentPlayerNumbers, row, col, sum, playerSum, winSum) || CheckDiagonalWin(board, winNumber, player, currentPlayerNumbers, row, col, winSum) || CheckAntiDiagonalWin(board,winNumber,player,currentPlayerNumbers,row,col,winSum);                                  
+        }
+        private static bool CheckRowsWin(int?[,] board, int winNumber, int player, List<int> currentPlayerNumbers,int row,int col,int sum,int playerSum,int winSum)
+        {
             for (int r = 0; r < row; r++)
             {
-                
-               
+
+
                 bool allFilled = true;
 
                 for (int c = 0; c < col; c++)
@@ -289,7 +316,7 @@ namespace The_15_Game
                         playerSum += value;
                     }
                 }
-               
+
 
                 if (allFilled && sum == winSum && playerSum == winSum)
                 {
@@ -297,11 +324,13 @@ namespace The_15_Game
                 }
 
             }
-
-            // Check all columns
+            return false;
+        }
+        private static bool CheckColsWin(int?[,] board, int winNumber, int player, List<int> currentPlayerNumbers, int row, int col, int sum, int playerSum, int winSum)
+        {
             for (int c = 0; c < col; c++)
             {
-                
+
                 bool allFilled = true;
 
                 for (int r = 0; r < row; r++)
@@ -326,38 +355,10 @@ namespace The_15_Game
                 }
 
             }
-
-            //  Diagonal: top-left to bottom-right
-            int diagSum1 = 0;
-            int playerDiagSum1 = 0;
-            bool diagFilled1 = true;
-            for (int i = 0; i < row; i++)
-            {
-                if (board[i, i] == null)
-                {
-                    diagFilled1 = false;
-                    break;
-                }
-                else
-                {
-                    int value = (int)board[i, i];
-                    diagSum1 += value;
-                    if (currentPlayerNumbers.Contains(value))
-                    {
-                        playerDiagSum1 += value;
-                    }
-                }
-             
-               
-            }
-
-            if (diagFilled1 && diagSum1 == winSum && playerDiagSum1 == winSum)
-            {
-                return true;
-            }
-
-
-            //  Diagonal: top-right to bottom-left
+            return false;
+        }
+        private static bool CheckDiagonalWin(int?[,] board, int winNumber, int player, List<int> currentPlayerNumbers, int row, int col,int winSum)
+        {
             int diagSum2 = 0;
             int playerDiagSum2 = 0;
             bool diagFilled2 = true;
@@ -378,8 +379,8 @@ namespace The_15_Game
                         playerDiagSum2 += value;
                     }
                 }
-               
-                
+
+
             }
 
             if (diagFilled2 && diagSum2 == winSum && playerDiagSum2 == winSum)
@@ -387,8 +388,37 @@ namespace The_15_Game
                 return true;
             }
 
+            return false;
+        }
+        private static bool CheckAntiDiagonalWin(int?[,] board, int winNumber, int player, List<int> currentPlayerNumbers, int row, int col, int winSum)
+        {
+            int diagSum1 = 0;
+            int playerDiagSum1 = 0;
+            bool diagFilled1 = true;
+            for (int i = 0; i < row; i++)
+            {
+                if (board[i, i] == null)
+                {
+                    diagFilled1 = false;
+                    break;
+                }
+                else
+                {
+                    int value = (int)board[i, i];
+                    diagSum1 += value;
+                    if (currentPlayerNumbers.Contains(value))
+                    {
+                        playerDiagSum1 += value;
+                    }
+                }
 
-            // No win found
+
+            }
+
+            if (diagFilled1 && diagSum1 == winSum && playerDiagSum1 == winSum)
+            {
+                return true;
+            }
             return false;
         }
         /// <summary>
