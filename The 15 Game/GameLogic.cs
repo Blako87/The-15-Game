@@ -12,15 +12,7 @@ namespace The_15_Game
 
     public class GameLogic
     {
-
-        public static List<int> Player1Numbers(List<int> player1Numbers)
-        {
-            return new List<int>(player1Numbers);
-        }
-        public static List<int> Player2Numbers(List<int> player2Numbers)
-        {
-            return new List<int>(player2Numbers);
-        }
+               
         public static List<int> GetUsedNumbers(List<int> usedNumbers)
         {
             return new List<int>(usedNumbers);

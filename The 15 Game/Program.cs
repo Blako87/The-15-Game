@@ -12,10 +12,10 @@ namespace The_15_Game
 
         static void Main(string[] args)
         {
-            const int CENTERNUMBERIMPUT = 5;
-            const int SECONDPLAYER = 2;
-            const int FIRSTPLAYER = 1;
-            const int WINNNUMBER = 15;
+            const int CENTER_NUMBER_IMPUT = 5;
+            const int SECOND_PLAYER = 2;
+            const int FIRST_PLAYER = 1;
+            const int WINN_NUMBER = 15;
             List<int> availableNumbers = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9 };
             List<int> usedNumbers = new List<int>();
             List<int> player1Numbers = new List<int>();
@@ -39,11 +39,11 @@ namespace The_15_Game
                 GameUi.GameStatusMessage($"Player {player}'s turn");
                 GameLogic.GetUsedNumbers(usedNumbers);
                 GameLogic.GetAvailableNumbers(availableNumbers);
-                if (player == FIRSTPLAYER)
+                if (player == FIRST_PLAYER)
                 {
                     (int cursorRow, int cursorColumn) = GameUi.GetBoardPositionWithArrows(board);
                     int number = GameUi.GetPlayerNumberInput(usedNumbers, availableNumbers, player1Numbers, player2Numbers, player);
-                    bool magicNumber = GameLogic.CheckCenterGridImputNumber(gridSize, cursorRow, cursorColumn, number,CENTERNUMBERIMPUT);
+                    bool magicNumber = GameLogic.CheckCenterGridImputNumber(gridSize, cursorRow, cursorColumn, number,CENTER_NUMBER_IMPUT);
                     if (magicNumber)
                     {
 
@@ -62,17 +62,13 @@ namespace The_15_Game
                 }
                 else
                 {
-                    var (row, col, number) = GameLogic.GetKiMove(board, WINNNUMBER, availableNumbers);
+                    var (row, col, number) = GameLogic.GetKiMove(board, WINN_NUMBER, availableNumbers);
                     GameLogic.PlaceNumber(board, row, col, number, player, availableNumbers, usedNumbers, player1Numbers, player2Numbers);
                 }
 
-
-
-
-
                 Console.Clear();
                 GameUi.DisplayBoard(board, -1, -1);
-                if (GameLogic.CheckWin(board, WINNNUMBER,player, player1Numbers, player2Numbers))
+                if (GameLogic.CheckWin(board, WINN_NUMBER,player, player1Numbers, player2Numbers))
                 {
 
                     GameUi.GameStatusMessage($"Congratulation Player {player} you win!");
@@ -85,7 +81,7 @@ namespace The_15_Game
                     break;
                 }
 
-                player = player == FIRSTPLAYER ? SECONDPLAYER : FIRSTPLAYER;
+                player = player == FIRST_PLAYER ? SECOND_PLAYER : FIRST_PLAYER;
 
             }
 
